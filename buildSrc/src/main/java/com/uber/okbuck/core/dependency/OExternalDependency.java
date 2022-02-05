@@ -113,7 +113,7 @@ public class OExternalDependency {
   }
 
   public static String getGradleSha(File file) {
-    return file.getParentFile().getName();
+    return file.getAbsolutePath();
   }
 
   /** Returns the packaging of the the dependency: jar, aar, pex */

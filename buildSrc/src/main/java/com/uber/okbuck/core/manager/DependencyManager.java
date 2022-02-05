@@ -28,9 +28,12 @@ import com.uber.okbuck.extension.ExternalDependenciesExtension;
 import com.uber.okbuck.extension.JetifierExtension;
 import com.uber.okbuck.extension.OkBuckExtension;
 import com.uber.okbuck.template.core.Rule;
+import com.uber.okbuck.template.java.Prebuilt;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -38,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import org.apache.commons.io.FileUtils;
 import org.gradle.api.Project;
@@ -316,6 +320,8 @@ public class DependencyManager {
             + " in final resolved deps.");
   }
 
+  private Set<String> hash = new HashSet<>();
+
   private void processDependencies(
       Map<VersionlessDependency, Collection<OExternalDependency>> dependencyMap) {
     Path rootPath = project.getRootDir().toPath();
@@ -352,15 +358,23 @@ public class DependencyManager {
           ImmutableList.Builder<OExternalDependency> prebuiltDependencies = ImmutableList.builder();
           ImmutableList.Builder<OExternalDependency> httpFileDependencies = ImmutableList.builder();
 
+          Set<String> sets = new HashSet();
+
           if (externalDependenciesExtension.shouldDownloadInBuck()) {
             dependencies.forEach(
                 dependency -> {
                   if (dependency instanceof LocalOExternalDependency) {
-                    localPrebuiltDependencies.add(dependency);
+                    if (sets.add(dependency.getMavenCoords())) {
+                      localPrebuiltDependencies.add(dependency);
+                    }
                   } else if (isPrebuiltDependency(dependency)) {
-                    prebuiltDependencies.add(dependency);
+                    if (sets.add(dependency.getMavenCoords())) {
+                      prebuiltDependencies.add(dependency);
+                    }
                   } else {
-                    httpFileDependencies.add(dependency);
+                    if (sets.add(dependency.getMavenCoords())) {
+                        httpFileDependencies.add(dependency);
+                    }
                   }
                 });
           } else {
@@ -383,8 +397,25 @@ public class DependencyManager {
             rulesBuilder.addAll(JavaAnnotationProcessorRuleComposer.compose(scopeList));
           }
 
-          buckFileManager.writeToBuckFile(
-              rulesBuilder.build(), basePath.resolve(OkBuckGradlePlugin.BUCK).toFile());
+          ArrayList<Rule> releList = new ArrayList<>(rulesBuilder.build());
+          List<Rule> result = releList.stream().filter(item -> {
+//             if (item instanceof Prebuilt) {
+//               Prebuilt prebuilt = (Prebuilt) item;
+//               if (!hash.add(prebuilt.sha256())) {
+//                 return false;
+//               }
+//
+//               if (prebuilt.sourcesSha256() != null && !hash.add(prebuilt.sourcesSha256())) {
+//                 return false;
+//               }
+//               return true;
+//             }
+             return true;
+          }).collect(Collectors.toList());
+
+
+          buckFileManager.writeToBuckFile(result
+             , basePath.resolve(OkBuckGradlePlugin.BUCK).toFile());
 
           createSymlinks(basePath, localPrebuiltDependencies.build());
         });
