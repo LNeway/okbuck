@@ -66,6 +66,7 @@ public final class AndroidBinaryRuleComposer extends AndroidBuckRuleComposer {
     }
 
     return new AndroidBinaryRule()
+        .aapt_mode("aapt2")
         .manifestSkeleton(manifestRule)
         .keystore(keystoreRuleName)
         .multidexEnabled(target.getMultidexEnabled())

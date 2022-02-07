@@ -16,10 +16,13 @@ boolean includesVectorDrawables,
 boolean exopackage,
 boolean minifyEnabled,
 boolean multidexEnabled,
+String aapt_mode
 )
+
 @com.uber.okbuck.template.base.BuckRule.template() -> {
     manifest_skeleton = "@manifestSkeleton",
     keystore = "@keystore",
+    aapt_mode = "aapt2",
     dex_tool = "d8",
 @if (exopackage) {
     exopackage_modes = ["secondary_dex"],

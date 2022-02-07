@@ -358,23 +358,15 @@ public class DependencyManager {
           ImmutableList.Builder<OExternalDependency> prebuiltDependencies = ImmutableList.builder();
           ImmutableList.Builder<OExternalDependency> httpFileDependencies = ImmutableList.builder();
 
-          Set<String> sets = new HashSet();
-
           if (externalDependenciesExtension.shouldDownloadInBuck()) {
             dependencies.forEach(
                 dependency -> {
                   if (dependency instanceof LocalOExternalDependency) {
-                    if (sets.add(dependency.getMavenCoords())) {
-                      localPrebuiltDependencies.add(dependency);
-                    }
+                    localPrebuiltDependencies.add(dependency);
                   } else if (isPrebuiltDependency(dependency)) {
-                    if (sets.add(dependency.getMavenCoords())) {
-                      prebuiltDependencies.add(dependency);
-                    }
+                    prebuiltDependencies.add(dependency);
                   } else {
-                    if (sets.add(dependency.getMavenCoords())) {
-                        httpFileDependencies.add(dependency);
-                    }
+                    httpFileDependencies.add(dependency);
                   }
                 });
           } else {
