@@ -84,6 +84,11 @@ public class JetifierExtension {
     if (aarOnly && packaging.equals(OResolvedDependency.JAR)) {
       return false;
     }
+
+    if (group.contains("com.android.tools") || group.contains("org.bouncycastle")) {
+      return false;
+    }
+
     return getExcludePatterns()
         .stream()
         .noneMatch(pattern -> pattern.matcher(group + ":" + name).matches());
