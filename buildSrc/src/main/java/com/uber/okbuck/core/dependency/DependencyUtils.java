@@ -76,6 +76,10 @@ public final class DependencyUtils {
     if (file.getAbsolutePath().contains("transforms-1/files-1")) {
       return false;
     }
+
+    if (file.getAbsolutePath().contains("transforms-2/files-2.1")) {
+      return false;
+    }
     return FilenameUtils.isExtension(file.getName(), ALLOWED_EXTENSIONS);
   }
 
