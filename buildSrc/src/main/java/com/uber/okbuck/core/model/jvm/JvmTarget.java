@@ -329,28 +329,37 @@ public class JvmTarget extends Target {
   public Scope getMain() {
     JavaCompile compileJavaTask =
         (JavaCompile) getProject().getTasks().getByName(JavaPlugin.COMPILE_JAVA_TASK_NAME);
-    return Scope.builder(getProject())
+    
+    Scope.Builder builder = Scope.builder(getProject())
         .configuration(JavaPlugin.RUNTIME_CLASSPATH_CONFIGURATION_NAME)
         .sourceDirs(getMainSrcDirs())
         .javaResourceDirs(getMainJavaResourceDirs())
         .customOptions(
-            JAVA_COMPILER_EXTRA_ARGUMENTS, compileJavaTask.getOptions().getCompilerArgs())
-        .customOptions(KOTLIN_COMPILER_EXTRA_ARGUMENTS, getKotlinCompilerOptions())
-        .customOptions(getKotlinFriendPaths(false))
+            JAVA_COMPILER_EXTRA_ARGUMENTS, compileJavaTask.getOptions().getCompilerArgs());
+
+    if (isKotlin) {
+      builder.customOptions(KOTLIN_COMPILER_EXTRA_ARGUMENTS, getKotlinCompilerOptions());
+    }
+
+    return builder.customOptions(getKotlinFriendPaths(false))
         .build();
   }
 
   public Scope getTest() {
     JavaCompile testCompileJavaTask =
         (JavaCompile) getProject().getTasks().getByName(JavaPlugin.COMPILE_TEST_JAVA_TASK_NAME);
-    return Scope.builder(getProject())
+
+    Scope.Builder builder = Scope.builder(getProject())
         .configuration(JavaPlugin.TEST_RUNTIME_CLASSPATH_CONFIGURATION_NAME)
         .sourceDirs(getTestSrcDirs())
         .javaResourceDirs(getTestJavaResourceDirs())
         .customOptions(
-            JAVA_COMPILER_EXTRA_ARGUMENTS, testCompileJavaTask.getOptions().getCompilerArgs())
-        .customOptions(KOTLIN_COMPILER_EXTRA_ARGUMENTS, getKotlinCompilerOptions())
-        .customOptions(getKotlinFriendPaths(true))
+            JAVA_COMPILER_EXTRA_ARGUMENTS, testCompileJavaTask.getOptions().getCompilerArgs());
+    if (isKotlin) {
+      builder.customOptions(KOTLIN_COMPILER_EXTRA_ARGUMENTS, getKotlinCompilerOptions());
+    }
+
+    return builder.customOptions(getKotlinFriendPaths(true))
         .build();
   }
 
@@ -364,15 +373,20 @@ public class JvmTarget extends Target {
       integrationTestCompileJavaTask =
           (JavaCompile) getProject().getTasks().getByName(JavaPlugin.COMPILE_TEST_JAVA_TASK_NAME);
     }
-    return Scope.builder(getProject())
+
+    Scope.Builder builder = Scope.builder(getProject())
         .configuration(INTEGRATION_TEST_RUNTIME_CLASSPATH_CONFIGURATION_NAME)
         .sourceDirs(getIntegrationTestSrcDirs())
         .javaResourceDirs(getIntegrationTestJavaResourceDirs())
         .customOptions(
             JAVA_COMPILER_EXTRA_ARGUMENTS,
-            integrationTestCompileJavaTask.getOptions().getCompilerArgs())
-        .customOptions(KOTLIN_COMPILER_EXTRA_ARGUMENTS, getKotlinCompilerOptions())
-        .customOptions(getKotlinFriendPaths(true))
+            integrationTestCompileJavaTask.getOptions().getCompilerArgs());
+
+    if (isKotlin) {
+      builder.customOptions(KOTLIN_COMPILER_EXTRA_ARGUMENTS, getKotlinCompilerOptions());
+    }
+
+    return builder.customOptions(getKotlinFriendPaths(true))
         .build();
   }
 
