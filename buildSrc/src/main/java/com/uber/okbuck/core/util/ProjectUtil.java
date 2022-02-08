@@ -40,6 +40,7 @@ import org.gradle.api.plugins.PluginContainer;
 import org.gradle.api.plugins.scala.ScalaPlugin;
 import org.gradle.jvm.JvmLibrary;
 import org.gradle.language.base.artifact.SourcesArtifact;
+import org.jetbrains.kotlin.gradle.plugin.KotlinMultiplatformPluginWrapper;
 import org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper;
 
 public final class ProjectUtil {
@@ -54,7 +55,8 @@ public final class ProjectUtil {
       return ProjectType.ANDROID_LIB;
     } else if (plugins.hasPlugin(GroovyPlugin.class)) {
       return ProjectType.GROOVY_LIB;
-    } else if (plugins.hasPlugin(KotlinPluginWrapper.class)) {
+    } else if (plugins.hasPlugin(KotlinPluginWrapper.class) ||  plugins.hasPlugin(
+        KotlinMultiplatformPluginWrapper.class)) {
       return ProjectType.KOTLIN_LIB;
     } else if (plugins.hasPlugin(ScalaPlugin.class)) {
       return ProjectType.SCALA_LIB;
