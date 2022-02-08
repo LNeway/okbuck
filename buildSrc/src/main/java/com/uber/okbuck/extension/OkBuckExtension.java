@@ -91,6 +91,9 @@ public class OkBuckExtension {
   public String buckBinary =
       "com.github.facebook:buck:f6578801138a7b6b89d4a485dd2d0c740fdefe8a@pex";
 
+  /** set the kotlin home  */
+  @Input @Nullable public String kotlinHome = null;
+
   private WrapperExtension wrapperExtension = new WrapperExtension();
   private KotlinExtension kotlinExtension;
   private ScalaExtension scalaExtension = new ScalaExtension();
@@ -211,5 +214,14 @@ public class OkBuckExtension {
 
   public boolean useResourceUnion() {
     return resourceUnionPackage != null || resourceUnion;
+  }
+
+  public void setKotlinHome(String kotlinHome) {
+    this.kotlinHome = kotlinHome;
+  }
+
+  @Nullable
+  public String getKotlinHome() {
+    return kotlinHome;
   }
 }

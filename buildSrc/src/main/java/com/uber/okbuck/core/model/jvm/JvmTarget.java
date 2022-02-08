@@ -485,7 +485,7 @@ public class JvmTarget extends Target {
 
         optionBuilder.add(
             "-Xplugin="
-                + KotlinManager.KOTLIN_LIBRARIES_LOCATION
+                + KotlinManager.kotlin_libraries_location
                 + File.separator
                 + KotlinManager.KOTLIN_ALLOPEN_JAR);
 

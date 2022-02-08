@@ -156,7 +156,7 @@ public class OkBuckGradlePlugin implements Plugin<Project> {
           lintManager = new LintManager(rootBuckProject, LINT_BUCK_FILE, buckFileManager);
 
           // Create Kotlin Manager
-          kotlinManager = new KotlinManager(rootBuckProject, buckFileManager);
+          kotlinManager = new KotlinManager(rootBuckProject,  okbuckExt.getKotlinHome(), buckFileManager);
 
           // Create Scala Manager
           scalaManager = new ScalaManager(rootBuckProject, buckFileManager);

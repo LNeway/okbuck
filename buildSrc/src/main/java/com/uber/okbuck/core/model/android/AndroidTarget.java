@@ -442,9 +442,9 @@ public abstract class AndroidTarget extends JvmTarget {
             });
 
     plugin.append("-Xplugin=");
-    plugin.append(KotlinManager.KOTLIN_LIBRARIES_LOCATION);
+    plugin.append(KotlinManager.kotlin_libraries_location);
     plugin.append(File.separator);
-    plugin.append("kotlin-android-extensions.jar");
+    plugin.append("android-extensions-compiler.jar");
 
     options.append(resDirs.toString());
     options.append(KOTLIN_EXTENSIONS_OPTION);

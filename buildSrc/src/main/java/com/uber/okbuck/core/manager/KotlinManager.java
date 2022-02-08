@@ -12,6 +12,9 @@ import com.uber.okbuck.core.util.ProjectUtil;
 import com.uber.okbuck.template.config.SymlinkBuckFile;
 import com.uber.okbuck.template.core.Rule;
 import com.uber.okbuck.template.jvm.JvmBinaryRule;
+
+import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Set;
 import java.util.TreeMap;
@@ -26,13 +29,13 @@ public final class KotlinManager {
   public static final String KOTLIN_ALLOPEN_JAR = KOTLIN_ALLOPEN_MODULE + ".jar";
 
   public static final String KOTLIN_HOME = "kotlin_home";
-  public static final String KOTLIN_HOME_LOCATION =
+  public static String kotlin_home_location =
       OkBuckGradlePlugin.WORKSPACE_PATH + "/" + KOTLIN_HOME;
-  public static final String KOTLIN_HOME_TARGET = "//" + KOTLIN_HOME_LOCATION + ":" + KOTLIN_HOME;
+  public static String kotlin_home_target = "//" + kotlin_home_location + ":" + KOTLIN_HOME;
   public static final String KOTLIN_KAPT_PLUGIN = "kotlin-kapt";
-  public static final String KOTLIN_HOME_BASE = "/libexec/lib";
-  public static final String KOTLIN_LIBRARIES_LOCATION =
-      "buck-out/gen" + "/" + KOTLIN_HOME_LOCATION + "/" + KOTLIN_HOME + KOTLIN_HOME_BASE;
+  public static final String KOTLIN_HOME_BASE = "/lib";
+  public static String kotlin_libraries_location =
+      "buck-out/gen" + "/" + kotlin_home_location + "/" + KOTLIN_HOME + KOTLIN_HOME_BASE;
   private static final String KOTLIN_GROUP = "org.jetbrains.kotlin";
   private static final String KOTLIN_GRADLE_MODULE = "kotlin-gradle-plugin";
   private static final String KOTLIN_DEPS_CONFIG = "okbuck_kotlin_deps";
@@ -61,9 +64,14 @@ public final class KotlinManager {
   @Nullable private String kotlinVersion;
   @Nullable private Set<OExternalDependency> dependencies;
 
-  public KotlinManager(Project project, BuckFileManager buckFileManager) {
+  public KotlinManager(Project project, String koltinHome, BuckFileManager buckFileManager) {
     this.project = project;
     this.buckFileManager = buckFileManager;
+    if (koltinHome != null && new File(koltinHome).exists()) {
+      kotlin_home_location = koltinHome;
+      kotlin_home_target = koltinHome;
+      kotlin_libraries_location = kotlin_home_location + KOTLIN_HOME_BASE;
+    }
   }
 
   @Nullable
@@ -88,7 +96,7 @@ public final class KotlinManager {
   }
 
   public void finalizeDependencies() {
-    Path path = project.file(KOTLIN_HOME_LOCATION).toPath();
+    Path path = project.file(OkBuckGradlePlugin.WORKSPACE_PATH + "/" + KOTLIN_HOME).toPath();
     FileUtil.deleteQuietly(path);
 
     if (!kotlinHomeEnabled) {

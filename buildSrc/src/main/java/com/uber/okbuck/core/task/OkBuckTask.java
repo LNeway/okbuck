@@ -114,7 +114,7 @@ public class OkBuckTask extends DefaultTask {
     generate(
         okBuckExtension,
         hasGroovyLib ? GroovyManager.GROOVY_HOME_TARGET : null,
-        kotlinExtension.version != null ? KotlinManager.KOTLIN_HOME_TARGET : null,
+        kotlinExtension.version != null ? KotlinManager.kotlin_home_target : null,
         hasScalaLib ? ScalaManager.SCALA_COMPILER_LOCATION : null,
         hasScalaLib ? scalaLibraryLocation : null);
   }
