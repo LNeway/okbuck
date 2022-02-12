@@ -1,5 +1,6 @@
 package com.uber.okbuck.core.model.jvm;
 
+import static com.uber.okbuck.core.dependency.OExternalDependency.compareByName;
 import static com.uber.okbuck.core.dependency.OExternalDependency.filterAar;
 import static com.uber.okbuck.core.dependency.OExternalDependency.filterJar;
 
@@ -20,6 +21,7 @@ import com.uber.okbuck.core.dependency.OExternalDependency;
 import com.uber.okbuck.core.dependency.VersionlessDependency;
 import com.uber.okbuck.core.manager.KotlinManager;
 import com.uber.okbuck.core.manager.LintManager;
+import com.uber.okbuck.core.model.android.AndroidTarget;
 import com.uber.okbuck.core.model.base.Scope;
 import com.uber.okbuck.core.model.base.SourceSetType;
 import com.uber.okbuck.core.model.base.Target;
@@ -337,6 +339,7 @@ public class JvmTarget extends Target {
         .customOptions(
             JAVA_COMPILER_EXTRA_ARGUMENTS, compileJavaTask.getOptions().getCompilerArgs());
 
+    // todo set the android.
     if (isKotlin) {
       builder.customOptions(KOTLIN_COMPILER_EXTRA_ARGUMENTS, getKotlinCompilerOptions());
     }
@@ -543,7 +546,7 @@ public class JvmTarget extends Target {
       }
 
       // Args from K2JVMCompilerArguments.kt and KotlinJvmOptions.kt
-      optionBuilder.put("-jvm-target", Optional.of(options.getJvmTarget()));
+      optionBuilder.put("-jvm-target", Optional.of("1.8"));
       if (options.getIncludeRuntime()) {
         optionBuilder.put("-include-runtime", Optional.empty());
       }
