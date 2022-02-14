@@ -9,6 +9,8 @@ import com.uber.okbuck.core.manager.BuckFileManager;
 import com.uber.okbuck.core.model.base.Scope;
 import com.uber.okbuck.core.util.ProjectUtil;
 import com.uber.okbuck.extension.ExternalDependenciesExtension;
+
+import java.lang.reflect.Field;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
@@ -19,9 +21,13 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import kotlin.jvm.Synchronized;
+
+import org.gradle.api.Action;
 import org.gradle.api.Project;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.Dependency;
+import org.gradle.api.attributes.Attribute;
+import org.gradle.api.attributes.AttributeContainer;
 
 /** Keeps a cache of the annotation processor dependencies and its scope. */
 public class AnnotationProcessorCache {
@@ -206,6 +212,13 @@ public class AnnotationProcessorCache {
         depSet -> {
           Dependency[] depArray = depSet.toArray(new Dependency[0]);
           Configuration detached = project.getConfigurations().detachedConfiguration(depArray);
+          detached.attributes(new Action<AttributeContainer>() {
+            @Override
+            public void execute(AttributeContainer attributeContainer) {
+              attributeContainer.attribute(Attribute.of("artifactType", String.class), "processed-jar");
+              attributeContainer.attribute(Attribute.of("org.gradle.usage", String.class), "java-runtime");
+            }
+          });
           return Scope.builder(project).configuration(detached).build();
         };
 
