@@ -19,6 +19,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
 import javax.annotation.Nullable;
 import org.gradle.api.Project;
 import org.slf4j.Logger;
@@ -132,7 +135,9 @@ public class AndroidAppTarget extends AndroidLibTarget {
           new ImmutableSet.Builder<File>()
               .addAll(getBaseVariant().getMergedFlavor().getProguardFiles())
               .addAll(getBaseVariant().getBuildType().getProguardFiles())
-              .build();
+              .build()
+              .stream()
+              .filter(file -> file.exists()).collect(Collectors.toSet());
 
       Preconditions.checkArgument(
           proguardFiles.size() == 1,
